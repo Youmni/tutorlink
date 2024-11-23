@@ -18,9 +18,12 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
         'email',
         'password',
+        'role',
+        'address_id',
     ];
 
     /**
@@ -44,5 +47,50 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function address()
+    {
+        return $this->belongsTo(Address::class, 'address_id');
+    }
+
+    public function newsItems()
+    {
+        return $this->hasMany(NewsItem::class, 'user_id');
+    }
+
+    public function sentMessages()
+    {
+        return $this->hasMany(Chatmessage::class, 'sender_id');
+    }
+
+    public function receivedMessages()
+    {
+        return $this->hasMany(Chatmessage::class, 'receiver_id');
+    }
+
+    public function blacklists()
+    {
+        return $this->hasMany(Blacklist::class, 'user_id');
+    }
+
+    public function availabilities()
+    {
+        return $this->hasMany(Availability::class, 'user_id');
+    }
+
+    public function reservationsAsTutor()
+    {
+        return $this->hasMany(Reservation::class, 'tutor_id');
+    }
+
+    public function reservationsAsClient()
+    {
+        return $this->hasMany(Reservation::class, 'client_id');
+    }
+
+    public function tutorCourses()
+    {
+        return $this->belongsToMany(Course::class, 'tutor_course', 'user_id', 'course_id');
     }
 }
